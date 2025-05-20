@@ -8,7 +8,7 @@ It creates:
 terraform {
   required_providers {
     namecheap = {
-      source = "namecheap/namecheap"
+      source  = "namecheap/namecheap"
       version = "~> 2.0"
     }
   }
@@ -20,18 +20,16 @@ resource "namecheap_domain_records" "module_domain" {
   email_type = "NONE"
 
   record {
-    # hostname = "www"
     hostname = var.CNAME_hostname
-    type = "CNAME"
-    address = var.CNAME_address
-    ttl = var.time_to_live
+    type     = "CNAME"
+    address  = var.CNAME_address
+    ttl      = var.time_to_live
   }
 
   record {
-    # hostname = "@"
     hostname = var.A_record_hostname
-    type = "A"
-    address = var.A_record_address
-    ttl = var.time_to_live
+    type     = "A"
+    address  = var.A_record_address
+    ttl      = var.time_to_live
   }
 }
