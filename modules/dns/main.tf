@@ -21,7 +21,7 @@ resource "namecheap_domain_records" "module_domain" {
 
   record {
     # hostname = "www"
-    hostname = "www.staging"
+    hostname = var.CNAME_hostname
     type = "CNAME"
     address = var.CNAME_address
     ttl = var.time_to_live
@@ -29,7 +29,7 @@ resource "namecheap_domain_records" "module_domain" {
 
   record {
     # hostname = "@"
-    hostname = "staging"
+    hostname = var.A_record_hostname
     type = "A"
     address = var.A_record_address
     ttl = var.time_to_live
