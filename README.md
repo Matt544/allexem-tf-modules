@@ -44,12 +44,16 @@ Note: For this to work, make sure your commit is already pushed to `main` or ano
 ### Change the reference of an existing tag
 To force an old tag (e.g., v0.0.1) to point to a new commit:
 ```shell
-git push origin :refs/tags/v0.0.1  # Delete the remote tag
-# Move the tag locally to the latest commit (force update with -f)
-git tag -fa v0.0.1 -m "Retagging v0.0.1 to latest commit"
-git push origin v0.0.1  # Push the updated tag to GitHub
-# Also push the commit to a branch (e.g., main) to avoid a detached commit
+git add -A
+git commit -m "the message"
 git push origin main
+
+# Move the tag locally to the latest commit (force update with -f)
+git tag -fa v0.0.2 -m "Retagging to latest commit"
+# Delete the remote tag
+git push origin :refs/tags/v0.0.2
+# Push the updated tag to GitHub
+git push origin v0.0.2
 ```
 
 After doing those things, re-running `terraform apply` on the modules won't pick up the changes because the modules will use the existing "cached" code. Do this:
