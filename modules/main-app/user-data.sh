@@ -11,14 +11,15 @@ aws --version
 cd /home/ubuntu
 
 aws s3api get-object --bucket allexem-tf-scripts \
---key scripts/staging/main-app/get_secrets.sh get_secrets.sh
+--key scripts/${staging_or_prod}/main-app/get_secrets.sh get_secrets.sh
 
 # Run script to save secrets to ./secrets
 chmod +x get_secrets.sh
-./get_secrets.sh
+# ./get_secrets.sh
+staging_or_prod="${staging_or_prod}" ./get_secrets.sh
 
 aws s3api get-object --bucket allexem-tf-scripts \
---key scripts/staging/main-app/dependencies.sh dependencies.sh
+--key scripts/${staging_or_prod}/main-app/dependencies.sh dependencies.sh
 
 # Install the dependencies
 chmod +x dependencies.sh
@@ -37,7 +38,7 @@ chmod +x iptables.sh
 rds_elastic_net_ip="${rds_elastic_net_ip}" subnets="${aws_subnets}" vpc_cidr_block="${vpc_cidr_block}" ./iptables.sh
 
 # NOTE: `compose ... up` and `rm -R ./secrets` should be commented in/out together
-docker compose -f compose.base.yaml -f compose.staging.yaml up -d
+docker compose -f compose.base.yaml -f compose.${staging_or_prod}.yaml up -d
 
 # remove the secrets dir. 
 rm -R ./secrets

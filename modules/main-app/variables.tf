@@ -64,3 +64,8 @@ variable "domain" {
 variable "vpc_id" {
   type = string
 }
+
+variable "staging_or_prod" {
+  description = "The environment: either 'staging' or 'prod'."
+  type = sting
+}

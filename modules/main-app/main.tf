@@ -204,6 +204,7 @@ data "cloudinit_config" "instance_cloudinit_config" {
         rds_elastic_net_ip = data.aws_eip.existing_eip.public_ip
         aws_subnets        = join(" ", [for s in data.aws_subnet.default : s.cidr_block])
         vpc_cidr_block     = data.aws_vpc.default.cidr_block
+        staging_or_prod    = var.staging_or_prod
       }
     )
   }
