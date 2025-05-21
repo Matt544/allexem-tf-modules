@@ -67,5 +67,5 @@ variable "vpc_id" {
 
 variable "staging_or_prod" {
   description = "The environment: either 'staging' or 'prod'."
-  type = sting
+  type = string
 }
