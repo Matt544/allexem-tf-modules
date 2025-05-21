@@ -128,21 +128,21 @@ locals {
           content     = filebase64(var.compose_base_path)
         },
         {
-          path        = "/home/ubuntu/compose.staging.yaml"
+          path        = "/home/ubuntu/compose.${var.staging_or_prod}.yaml"
           permissions = "0644"
           owner       = "root:root"
           encoding    = "b64"
           content     = filebase64(var.compose_extension_path)
         },
         {
-          path        = "/home/ubuntu/.env.staging"
+          path        = "/home/ubuntu/.env.${var.staging_or_prod}"
           permissions = "0644"
           owner       = "root:root"
           encoding    = "b64"
           content     = filebase64(var.env_main_path)
         },
         {
-          path        = "/home/ubuntu/.env.staging.proxy-companion"
+          path        = "/home/ubuntu/.env.${var.staging_or_prod}.proxy-companion"
           permissions = "0644"
           owner       = "root:root"
           encoding    = "b64"
