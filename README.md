@@ -22,20 +22,35 @@ ssh-add ~/.ssh/id_ed25519
 The ssh passphrase is the usual default password for the Allexem project.
 
 ## Versioning
-Modules are versioned using Git tags. To create a new version:
+Modules are versioned using Git tags. 
+
+### To Commit and tag a new version
+```shell
+git add -A
+git commit -m "Update module to support XYZ"
+git tag -a v0.0.2 -m "Description of tag"
+git push origin main --follow-tags
+```
+
+### To create a new version tag
 ```shell
 git tag -a v0.0.2 -m "Description of changes"
 git push origin v0.0.2
 ```
-Update your Terraform source reference to match: `source = "git@github.com:Matt544/allexem-tf-modules.git//dns?ref=v0.0.2"`.
+Note: Update your Terraform source reference to match: `source = "git@github.com:Matt544/allexem-tf-modules.git//dns?ref=v0.0.2"`.
 
 Note: For this to work, make sure your commit is already pushed to `main` or another branch, or push it first with git push origin main.
 
+### Change the reference of an existing tag
 To force an old tag (e.g., v0.0.1) to point to a new commit:
-- Delete the remote tag: `git push origin :refs/tags/v0.0.1`
-- Move the tag locally (with -f to force): `git tag -fa v0.0.1 -m "Retagging v0.0.1 to latest commit"`
-- Push the tag to GitHub: `git push origin v0.0.1`
-- Also push the commit to a branch (like main) so it doesn’t appear detached: `git push origin main`
+```shell
+git push origin :refs/tags/v0.0.1  # Delete the remote tag
+# Move the tag locally to the latest commit (force update with -f)
+git tag -fa v0.0.1 -m "Retagging v0.0.1 to latest commit"
+git push origin v0.0.1  # Push the updated tag to GitHub
+# Also push the commit to a branch (e.g., main) to avoid a detached commit
+git push origin main
+```
 
 After doing those things, re-running `terraform apply` on the modules won't pick up the changes because the modules will use the existing "cached" code. Do this:
 ```shell
