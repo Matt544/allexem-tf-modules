@@ -8,7 +8,6 @@ Update the module's `source` directive:
 ```
 module "dns" {
   source = "git@github.com:Matt544/allexem-tf-modules.git//dns?ref=v0.0.1"
-
   <...>
 }
 ```
