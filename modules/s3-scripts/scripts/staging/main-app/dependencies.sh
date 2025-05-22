@@ -52,7 +52,7 @@ systemctl restart docker
 sudo chown ubuntu /var/run/docker.sock
 sudo usermod -aG docker ubuntu
 
-aws ecr get-login-password --region us-east-2 | docker login --username AWS \
-  --password-stdin 273354654458.dkr.ecr.us-east-2.amazonaws.com
+aws ecr get-login-password --region ca-west-1 | docker login --username AWS \
+  --password-stdin 273354654458.dkr.ecr.ca-west-1.amazonaws.com
 
 echo "<<<<<< exiting dependencies.sh"
