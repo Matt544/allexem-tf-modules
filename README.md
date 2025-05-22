@@ -27,6 +27,7 @@ Modules are versioned using Git tags.
 ```shell
 git add -A
 git commit -m "Update module to support XYZ"
+git describe --tags --abbrev=0  # confirm current version so you can increment. E.g. v0.0.1
 git tag -a v0.0.2 -m "Description of tag"
 git push origin main --follow-tags
 ```
