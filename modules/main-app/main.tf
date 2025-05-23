@@ -80,13 +80,13 @@ resource "aws_iam_policy" "read_scripts_policy" {
         Effect = "Allow"
         Action = "s3:GetObject"
         Resource = [
-          "arn:aws:s3:::allexem-tf-scripts",
-          "arn:aws:s3:::allexem-tf-scripts/scripts/*",
+          "arn:aws:s3:::allexem-${var.staging_or_prod}-tf-scripts",
+          "arn:aws:s3:::allexem-${var.staging_or_prod}-tf-scripts/scripts/*",
         ]
       }
     ]
   })
-}
+}   # AHHHHHHH!
 
 resource "aws_iam_role_policy_attachment" "attach_read_scripts_policy" {
   role      = aws_iam_role.allexem1_role_2.name
@@ -103,11 +103,11 @@ resource "aws_iam_policy" "read_secrets_policy" {
      {
         Effect = "Allow"
         Action = "s3:GetObject"
-        Resource = "arn:aws:s3:::allexem-secrets/staging/*"
+        Resource = "arn:aws:s3:::allexem-${var.staging_or_prod}-secrets/staging/*"
       }
     ]
   })
-}
+}  # AHHHHHHH!
 
 resource "aws_iam_role_policy_attachment" "attach_read_secrets_policy" {
   role       = aws_iam_role.allexem1_role_2.name
