@@ -15,7 +15,7 @@ aws --version
 cd /home/ubuntu
 
 aws s3api get-object --bucket "allexem-${staging_or_prod}-tf-scripts" \
---key scripts/${staging_or_prod}/main-app/get_secrets.sh get_secrets.sh
+--key scripts/main-app/get_secrets.sh get_secrets.sh
 
 # Run script to save secrets to ./secrets
 chmod +x get_secrets.sh
@@ -23,7 +23,7 @@ chmod +x get_secrets.sh
 staging_or_prod="${staging_or_prod}" ./get_secrets.sh
 
 aws s3api get-object --bucket "allexem-${staging_or_prod}-tf-scripts" \
---key scripts/${staging_or_prod}/main-app/dependencies.sh dependencies.sh
+--key scripts/main-app/dependencies.sh dependencies.sh
 
 # Install the dependencies
 chmod +x dependencies.sh
