@@ -14,7 +14,7 @@ aws --version
 
 cd /home/ubuntu
 
-aws s3api get-object --bucket allexem-tf-scripts \
+aws s3api get-object --bucket "allexem-${staging_or_prod}-tf-scripts" \
 --key scripts/${staging_or_prod}/main-app/get_secrets.sh get_secrets.sh
 
 # Run script to save secrets to ./secrets
@@ -22,7 +22,7 @@ chmod +x get_secrets.sh
 # ./get_secrets.sh
 staging_or_prod="${staging_or_prod}" ./get_secrets.sh
 
-aws s3api get-object --bucket allexem-tf-scripts \
+aws s3api get-object --bucket "allexem-${staging_or_prod}-tf-scripts" \
 --key scripts/${staging_or_prod}/main-app/dependencies.sh dependencies.sh
 
 # Install the dependencies
@@ -35,7 +35,7 @@ export API_NET_NAME=api-network
 docker network create -d bridge -o com.docker.network.bridge.name=$API_NET_INTERFACE_NAME $API_NET_NAME
 
 # Get and run the iptables script
-aws s3api get-object --bucket allexem-tf-scripts \
+aws s3api get-object --bucket "allexem-${staging_or_prod}-tf-scripts" \
 --key scripts/iptables.sh iptables.sh
 
 chmod +x iptables.sh

@@ -23,7 +23,7 @@ keys=(
 
 for key in "${keys[@]}"; do
   aws s3api get-object \
-    --bucket allexem-secrets \
+    --bucket "allexem-${staging_or_prod}-secrets" \
     --key "$key" \
     "./secrets/$(basename "$key")"
 done
