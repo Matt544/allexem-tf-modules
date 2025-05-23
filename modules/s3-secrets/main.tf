@@ -14,7 +14,8 @@ resource "aws_s3_bucket" "secrets_bucket" {
   bucket = var.bucket_name
 
   lifecycle {
-    prevent_destroy = true
+    # prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
