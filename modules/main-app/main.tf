@@ -103,7 +103,7 @@ resource "aws_iam_policy" "read_secrets_policy" {
      {
         Effect = "Allow"
         Action = "s3:GetObject"
-        Resource = "arn:aws:s3:::allexem-${var.staging_or_prod}-secrets/staging/*"
+        Resource = "arn:aws:s3:::allexem-${var.staging_or_prod}-secrets/${var.staging_or_prod}/*"
       }
     ]
   })
@@ -225,7 +225,7 @@ resource "aws_instance" "allexem1" {
   user_data_replace_on_change = true  # TODO: assess this. Make an input parameter?
 }
 
-output "staging_url" {
+output "staging_url" {  # TODO: Change name or remove
   value = "https://${var.domain}/"
 }
 
