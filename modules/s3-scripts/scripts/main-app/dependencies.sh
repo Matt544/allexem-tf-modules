@@ -36,7 +36,7 @@ sudo tee cat > /etc/docker/daemon.json <<EOL
 {
     "runtimes": {
         "runsc": {
-            "path": "/usr/bin/runsc"
+          "path": "/usr/bin/runsc"
         }
     }
 }
