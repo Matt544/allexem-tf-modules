@@ -50,4 +50,4 @@ docker compose -f compose.base.yaml -f compose.${staging_or_prod}.yaml up -d
 rm -R ./secrets
 rm get_secrets.sh
 
-sleep 15
+# sleep 15
