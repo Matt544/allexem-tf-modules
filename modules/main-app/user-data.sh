@@ -26,7 +26,7 @@ staging_or_prod="${staging_or_prod}" ./get_secrets.sh
 # Call with the erc_url var
 echo "AHHHHHHHHHHHHHHHH"
 echo "${ecr_url}"
-echo "*****************************************************************
+
 ecr_url="${ecr_url}" aws s3api get-object --bucket "allexem-${staging_or_prod}-tf-scripts" \
 --key scripts/main-app/dependencies.sh dependencies.sh
 
