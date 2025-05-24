@@ -47,6 +47,11 @@ variable "compose_extension_path" {
   type        = string
 }
 
+variable "env_base_path" {
+  description = "Path to base environment file"
+  type        = string
+}
+
 variable "env_main_path" {
   description = "Path to main environment file"
   type        = string
