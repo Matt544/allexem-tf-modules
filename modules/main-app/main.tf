@@ -58,7 +58,7 @@ resource "aws_iam_policy" "ecr_pull_policy" {
           "ecr:DescribeRepositories",
           "ecr:ListImages"
         ]
-        Resource = "*"  # Required for ECR authentication (???)
+        Resource = "*"  # TODO: narrow this? Note: Presently all resources are needed.
       }
     ]
   })
@@ -86,10 +86,10 @@ resource "aws_iam_policy" "read_scripts_policy" {
       }
     ]
   })
-}   # AHHHHHHH!
+}
 
 resource "aws_iam_role_policy_attachment" "attach_read_scripts_policy" {
-  role      = aws_iam_role.allexem1_role_2.name
+  role       = aws_iam_role.allexem1_role_2.name
   policy_arn = aws_iam_policy.read_scripts_policy.arn
 }
 
@@ -107,7 +107,7 @@ resource "aws_iam_policy" "read_secrets_policy" {
       }
     ]
   })
-}  # AHHHHHHH!
+}
 
 resource "aws_iam_role_policy_attachment" "attach_read_secrets_policy" {
   role       = aws_iam_role.allexem1_role_2.name
@@ -216,7 +216,6 @@ resource "aws_instance" "allexem1" {
   ami                    = var.ami
   instance_type          = var.instance_type
   key_name               = var.instance_key_name
-  # vpc_security_group_ids = [aws_security_group.allexem1.id]
   vpc_security_group_ids = [var.allexem_security_group_id]
 
   # Attach IAM Role via Instance Profile

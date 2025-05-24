@@ -3,7 +3,6 @@ echo ">>>>>> entered dependencies.sh"
 
 sudo apt-get update
 apt-get install -y postgresql-client-17
-# sudo apt install -y docker.io
 
 # Install Docker following https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
 # Add Docker's official GPG key:
