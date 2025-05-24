@@ -53,6 +53,6 @@ sudo chown ubuntu /var/run/docker.sock
 sudo usermod -aG docker ubuntu
 
 aws ecr get-login-password --region ca-west-1 | docker login --username AWS \
-  --password-stdin 273354654458.dkr.ecr.ca-west-1.amazonaws.com
+  --password-stdin "${ecr_url}"
 
 echo "<<<<<< exiting dependencies.sh"
