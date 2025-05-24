@@ -62,3 +62,6 @@ rm -rf .terraform/modules
 terraform init -upgrade
 ```
 This will clear the cached module and re-download it from Git, using the latest commit referenced by the tag.
+
+### Use the script for commiting and tagging patches
+Run `commit_patch.sh` to add, commit and tag a new patch version.

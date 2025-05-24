@@ -40,7 +40,17 @@ git fetch --tags
 
 # Get the most recent local and remote tags matching v*.*.*
 local_last_tag=$(git tag --list 'v*.*.*' | sort -V | tail -n 1)
-remote_last_tag=$(git ls-remote --tags origin 'v*.*.*' | awk '{print $2}' | sed 's|refs/tags/||' | sort -V | tail -n 1)
+# remote_last_tag=$(git ls-remote --tags origin 'v*.*.*' | awk '{print $2}' | sed 's|refs/tags/||' | sort -V | tail -n 1)
+
+remote_last_tag=$(git ls-remote --tags origin 'v*.*.*' \
+  | awk '{print $2}' \
+  | grep -v '\^{}' \
+  | sed 's|refs/tags/||' \
+  | sort -V \
+  | tail -n 1)
+
+
+
 
 # Initialize version components
 major=0
