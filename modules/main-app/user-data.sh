@@ -27,12 +27,12 @@ staging_or_prod="${staging_or_prod}" ./get_secrets.sh
 echo "AHHHHHHHHHHHHHHHH"
 echo "${ecr_url}"
 
-ecr_url="${ecr_url}" aws s3api get-object --bucket "allexem-${staging_or_prod}-tf-scripts" \
---key scripts/main-app/dependencies.sh dependencies.sh
+aws s3api get-object --bucket "allexem-${staging_or_prod}-tf-scripts" \
+--key scripts/main-app/dependencies.sh dependencies.sh  # placing it here was wrong. Not for getting!
 
 # Install the dependencies
 chmod +x dependencies.sh
-./dependencies.sh
+ecr_url="${ecr_url}" ./dependencies.sh
 
 # create the api-network, assigning an interface and network name
 export API_NET_INTERFACE_NAME=api-network-if
