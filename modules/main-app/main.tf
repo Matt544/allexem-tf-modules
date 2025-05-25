@@ -128,7 +128,8 @@ locals {
           content     = filebase64(var.compose_base_path)
         },
         {
-          path        = "/home/ubuntu/compose.${var.staging_or_prod}.yaml"
+          # path        = "/home/ubuntu/compose.${var.staging_or_prod}.yaml"  # could be .live but var.staging_or_prod works too??
+          path        = "/home/ubuntu/compose.live.yaml"
           permissions = "0644"
           owner       = "root:root"
           encoding    = "b64"

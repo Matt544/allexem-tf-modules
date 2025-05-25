@@ -47,4 +47,4 @@ docker compose --env-file .env.live.${staging_or_prod} -f compose.base.yaml -f c
 rm -R ./secrets
 rm get_secrets.sh
 
-sleep 15
+# sleep 15
