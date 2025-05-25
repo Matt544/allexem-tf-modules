@@ -223,7 +223,7 @@ data "cloudinit_config" "instance_cloudinit_config" {
 resource "aws_instance" "allexem1" {
   ami                    = var.ami
   instance_type          = var.instance_type
-  key_name               = var.instance_key_name
+  key_name               = var.instance_key_name  # causes a deployment error if null
   vpc_security_group_ids = [var.allexem_security_group_id]
 
   # Attach IAM Role via Instance Profile
