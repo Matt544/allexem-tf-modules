@@ -39,7 +39,7 @@ chmod +x iptables.sh
 rds_elastic_net_ip="${rds_elastic_net_ip}" \
     subnets="${aws_subnets}" \
     vpc_cidr_block="${vpc_cidr_block}" \
-    api_net_interface="${API_NET_INTERFACE_NAME}" \
+    api_net_interface=$API_NET_INTERFACE_NAME \
     ./iptables.sh
 
 # NOTE: `compose ... up` and `rm -R ./secrets` should be commented in/out together
