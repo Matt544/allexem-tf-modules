@@ -39,8 +39,12 @@ chmod +x iptables.sh
 rds_elastic_net_ip="${rds_elastic_net_ip}" \
     subnets="${aws_subnets}" \
     vpc_cidr_block="${vpc_cidr_block}" \
-    api_net_interface=$API_NET_INTERFACE_NAME \
+    api_net_interface="$API_NET_INTERFACE_NAME" \
     ./iptables.sh
+    # Note: `$API_NET_INTERFACE_NAME` should be referenced without the curly brackets, 
+    # unlike the other variables. The others are passed into terraform's templatefile()
+    # which tries to parse all template variables in the format ${...} (according to 
+    # chatGPT, at lesat!). But `API_NET_INTERFACE_NAME` is defined in-file.
 
 # NOTE: `compose ... up` and `rm -R ./secrets` should be commented in/out together
 docker compose --env-file .env.live.${staging_or_prod} -f compose.base.yaml -f compose.live.yaml up -d
