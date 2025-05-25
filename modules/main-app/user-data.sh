@@ -40,7 +40,8 @@ rds_elastic_net_ip="${rds_elastic_net_ip}" \
     subnets="${aws_subnets}" vpc_cidr_block="${vpc_cidr_block}" ./iptables.sh
 
 # NOTE: `compose ... up` and `rm -R ./secrets` should be commented in/out together
-docker compose -f compose.base.yaml -f compose.${staging_or_prod}.yaml up -d
+# docker compose -f compose.base.yaml -f compose.${staging_or_prod}.yaml up -d
+docker compose --env-file .env.live.${staging_or_prod} -f compose.base.yaml -f compose.live.yaml up -d
 
 # remove the secrets dir. 
 rm -R ./secrets
