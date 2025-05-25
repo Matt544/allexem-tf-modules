@@ -26,7 +26,7 @@ chmod +x dependencies.sh
 ecr_url="${ecr_url}" ./dependencies.sh
 
 # create the api-network, assigning an interface and network name
-export API_NET_INTERFACE_NAME=api-network-if
+export API_NET_INTERFACE_NAME=api-network-if  # WHAT IS api-network-if ??????
 export API_NET_NAME=api-network
 docker network create -d bridge -o \
     com.docker.network.bridge.name=$API_NET_INTERFACE_NAME $API_NET_NAME
@@ -37,7 +37,10 @@ aws s3api get-object --bucket "allexem-${staging_or_prod}-tf-scripts" \
 
 chmod +x iptables.sh
 rds_elastic_net_ip="${rds_elastic_net_ip}" \
-    subnets="${aws_subnets}" vpc_cidr_block="${vpc_cidr_block}" ./iptables.sh
+    subnets="${aws_subnets}" \
+    vpc_cidr_block="${vpc_cidr_block}" \
+    api_net_interface="${API_NET_INTERFACE_NAME}" \
+    ./iptables.sh
 
 # NOTE: `compose ... up` and `rm -R ./secrets` should be commented in/out together
 docker compose --env-file .env.live.${staging_or_prod} -f compose.base.yaml -f compose.live.yaml up -d

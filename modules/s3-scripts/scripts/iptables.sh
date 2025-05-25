@@ -15,9 +15,9 @@
 # `subnets` -> the CIDR blocks associated with all of my subnets
 # `vpc_cidr_block` -> the CIDR block associated with my VPC
 # Note: I am unsure how stable these CIDR blocks will be.
-echo "rds_elastic_net_ip=\"$rds_elastic_net_ip\" subnets=\"$subnets\" vpc_cidr_block=\"$vpc_cidr_block\" ./iptables.sh" > iptables_call.txt
+echo "rds_elastic_net_ip=\"$rds_elastic_net_ip\" subnets=\"$subnets\" vpc_cidr_block=\"$vpc_cidr_block\" api_net_interface=\"$API_NET_INTERFACE_NAME\" ./iptables.sh" > iptables_call.txt
 
-api_net_interface=api-network-if
+# api_net_interface=api-network-if  # WHAT IS api-network-if ?????? (a string value for the name??)
 
 # Conditionally install iptables-persistent
 if ! dpkg -l | grep netfilter-persistent; then
@@ -184,8 +184,8 @@ rm -f "$google_ips_path"  # Clean up
 # a lot of the more specific rules already applied. In part, I am not fully confident in
 # my understanding and implementation of these iptables rules, so this is a 
 # belt-and-suspenders approach.
-iptables -A DOCKER-USER -i "$api_net_interface" -d "$$vpc_cidr_block" -j LOG --log-prefix "DOCKER DEBUG ACCEPT 4: " --log-level 4
-iptables -A DOCKER-USER -i "$api_net_interface" -d "$$vpc_cidr_block" -j ACCEPT
+iptables -A DOCKER-USER -i "$api_net_interface" -d "$vpc_cidr_block" -j LOG --log-prefix "DOCKER DEBUG ACCEPT 4: " --log-level 4
+iptables -A DOCKER-USER -i "$api_net_interface" -d "$vpc_cidr_block" -j ACCEPT
 
 # Before adding DROP rules, add log rules that should not run but will if there is a  
 # problem with the above rules, and especially with the value of $rds_elastic_net_ip.
