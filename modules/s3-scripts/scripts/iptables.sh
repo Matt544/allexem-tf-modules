@@ -17,8 +17,6 @@
 # Note: I am unsure how stable these CIDR blocks will be.
 echo "rds_elastic_net_ip=\"$rds_elastic_net_ip\" subnets=\"$subnets\" vpc_cidr_block=\"$vpc_cidr_block\" api_net_interface_name=\"$api_net_interface_name\" ./iptables.sh" > iptables_call.txt
 
-# api_net_interface_name=api-network-if  # WHAT IS api-network-if ?????? (a string value for the name??)
-
 # Conditionally install iptables-persistent
 if ! dpkg -l | grep netfilter-persistent; then
     apt-get update && apt-get install -y netfilter-persistent

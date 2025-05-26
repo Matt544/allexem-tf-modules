@@ -26,8 +26,6 @@ chmod +x dependencies.sh
 ecr_url="${ecr_url}" ./dependencies.sh
 
 # create the api-network, assigning an interface and network name
-# export API_NET_INTERFACE_NAME=api-network-if  # WHAT IS api-network-if ??????
-# export API_NET_NAME=api-network
 docker network create -d bridge -o \
     com.docker.network.bridge.name="${api_net_interface_name}" "${api_net_name}"
 
