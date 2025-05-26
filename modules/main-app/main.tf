@@ -234,7 +234,7 @@ resource "aws_instance" "allexem1" {
   user_data_replace_on_change = true  # TODO: assess this. Make an input parameter?
 }
 
-output "staging_url" {  # TODO: Change name or remove
+output "url" {
   value = "https://${var.domain}/"
 }
 
