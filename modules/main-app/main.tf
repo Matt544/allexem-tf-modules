@@ -208,11 +208,13 @@ data "cloudinit_config" "instance_cloudinit_config" {
     content      = templatefile(
       "${path.module}/user-data.sh", 
       {
-        rds_elastic_net_ip = data.aws_eip.existing_eip.public_ip
-        aws_subnets        = join(" ", [for s in data.aws_subnet.default : s.cidr_block])
-        vpc_cidr_block     = data.aws_vpc.default.cidr_block
-        staging_or_prod    = var.staging_or_prod
-        ecr_url            = var.ecr_url
+        rds_elastic_net_ip     = data.aws_eip.existing_eip.public_ip
+        aws_subnets            = join(" ", [for s in data.aws_subnet.default : s.cidr_block])
+        vpc_cidr_block         = data.aws_vpc.default.cidr_block
+        staging_or_prod        = var.staging_or_prod
+        ecr_url                = var.ecr_url
+        api_net_interface_name = "api-network-if"
+        api_net_name           = "api-network"
       }
     )
   }

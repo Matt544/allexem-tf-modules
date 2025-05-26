@@ -26,10 +26,10 @@ chmod +x dependencies.sh
 ecr_url="${ecr_url}" ./dependencies.sh
 
 # create the api-network, assigning an interface and network name
-export API_NET_INTERFACE_NAME=api-network-if  # WHAT IS api-network-if ??????
-export API_NET_NAME=api-network
+# export API_NET_INTERFACE_NAME=api-network-if  # WHAT IS api-network-if ??????
+# export API_NET_NAME=api-network
 docker network create -d bridge -o \
-    com.docker.network.bridge.name=$API_NET_INTERFACE_NAME $API_NET_NAME
+    com.docker.network.bridge.name="${api_net_interface_name}" "${api_net_name}"
 
 # Get and run the iptables script
 aws s3api get-object --bucket "allexem-${staging_or_prod}-tf-scripts" \
@@ -39,12 +39,8 @@ chmod +x iptables.sh
 rds_elastic_net_ip="${rds_elastic_net_ip}" \
     subnets="${aws_subnets}" \
     vpc_cidr_block="${vpc_cidr_block}" \
-    api_net_interface="$API_NET_INTERFACE_NAME" \
+    api_net_interface_name="${api_net_interface_name}" \
     ./iptables.sh
-    # Note: `$API_NET_INTERFACE_NAME` should be referenced without the curly brackets, 
-    # unlike the other variables. The others are passed into terraform's templatefile()
-    # which tries to parse all template variables in the format ${...} (according to 
-    # chatGPT, at lesat!). But `API_NET_INTERFACE_NAME` is defined in-file.
 
 # NOTE: `compose ... up` and `rm -R ./secrets` should be commented in/out together
 docker compose --env-file .env.live.${staging_or_prod} -f compose.base.yaml -f compose.live.yaml up -d

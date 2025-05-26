@@ -15,9 +15,9 @@
 # `subnets` -> the CIDR blocks associated with all of my subnets
 # `vpc_cidr_block` -> the CIDR block associated with my VPC
 # Note: I am unsure how stable these CIDR blocks will be.
-echo "rds_elastic_net_ip=\"$rds_elastic_net_ip\" subnets=\"$subnets\" vpc_cidr_block=\"$vpc_cidr_block\" api_net_interface=\"$API_NET_INTERFACE_NAME\" ./iptables.sh" > iptables_call.txt
+echo "rds_elastic_net_ip=\"$rds_elastic_net_ip\" subnets=\"$subnets\" vpc_cidr_block=\"$vpc_cidr_block\" api_net_interface_name=\"$api_net_interface_name\" ./iptables.sh" > iptables_call.txt
 
-# api_net_interface=api-network-if  # WHAT IS api-network-if ?????? (a string value for the name??)
+# api_net_interface_name=api-network-if  # WHAT IS api-network-if ?????? (a string value for the name??)
 
 # Conditionally install iptables-persistent
 if ! dpkg -l | grep netfilter-persistent; then
@@ -35,9 +35,9 @@ iptables -F DOCKER-USER
 # unsure whether the ip address associated with the RDS endpoint will be stable and 
 # relable. The `iptables` docs say about `-s`/`d`, "specifying any name to be resolved  
 # with a remote query such as DNS is a really bad idea".
-iptables -A DOCKER-USER -i "$api_net_interface" -p tcp -d "$rds_elastic_net_ip" --dport 5432 -j ACCEPT
+iptables -A DOCKER-USER -i "$api_net_interface_name" -p tcp -d "$rds_elastic_net_ip" --dport 5432 -j ACCEPT
 # Allow traffic from RDS to the network and into the container
-iptables -A DOCKER-USER -o "$api_net_interface" -s "$rds_elastic_net_ip" -j ACCEPT
+iptables -A DOCKER-USER -o "$api_net_interface_name" -s "$rds_elastic_net_ip" -j ACCEPT
 # Note: these rules could be narrowed by adding `-d/-s <the_contain_ip> --dport 8000`.  
 # To do that I would have to create a subnet during network creation with a predefined 
 # ip address and refer to that in the compose file. 
@@ -46,22 +46,22 @@ iptables -A DOCKER-USER -o "$api_net_interface" -s "$rds_elastic_net_ip" -j ACCE
 # Add conntrack rules below others to avoid unnecessary performance degradation of that 
 # w/ docker.
 # Accept outbound established and related connections on api-network
-iptables -A DOCKER-USER -i "$api_net_interface" -p tcp -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A DOCKER-USER -i "$api_net_interface_name" -p tcp -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 # Accept inbound established and related connections on api-network
-iptables -A DOCKER-USER -o "$api_net_interface" -p tcp -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A DOCKER-USER -o "$api_net_interface_name" -p tcp -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
 # Note: The below two rules confuse me. Consider this truncated log output from
-# `iptables -A DOCKER-USER -i "$api_net_interface" -p tcp -m conntrack --ctreplsrc 172.31.2.73 -j ACCEPT`:
+# `iptables -A DOCKER-USER -i "$api_net_interface_name" -p tcp -m conntrack --ctreplsrc 172.31.2.73 -j ACCEPT`:
 # `DOCKER LOG 4:IN=api-network-if OUT=enX0 ... SRC=172.18.0.2 DST=172.31.2.73`
 # I don't understand how `--ctorigdst` could be $rds_elastic_net_ip, where the rule shows RDS
 # is the destination. It seems like either the above or the below rule should have no 
 # effect, as they are the same except the use of --ctreplsrc/--ctorigdst. But logging 
 # shows they both are operative.
-iptables -A DOCKER-USER -i "$api_net_interface" -p tcp -m conntrack --ctorigdst "$rds_elastic_net_ip" --ctorigdstport 5432 -j ACCEPT
-iptables -A DOCKER-USER -i "$api_net_interface" -p tcp -m conntrack --ctreplsrc "$rds_elastic_net_ip" --ctorigdstport 5432 -j ACCEPT
+iptables -A DOCKER-USER -i "$api_net_interface_name" -p tcp -m conntrack --ctorigdst "$rds_elastic_net_ip" --ctorigdstport 5432 -j ACCEPT
+iptables -A DOCKER-USER -i "$api_net_interface_name" -p tcp -m conntrack --ctreplsrc "$rds_elastic_net_ip" --ctorigdstport 5432 -j ACCEPT
 # Note: My comments about the above rules apply to the below two.
-iptables -A DOCKER-USER -o "$api_net_interface" -p tcp -m conntrack --ctorigdst "$rds_elastic_net_ip" -j ACCEPT
-iptables -A DOCKER-USER -o "$api_net_interface" -p tcp -m conntrack --ctreplsrc "$rds_elastic_net_ip" -j ACCEPT
+iptables -A DOCKER-USER -o "$api_net_interface_name" -p tcp -m conntrack --ctorigdst "$rds_elastic_net_ip" -j ACCEPT
+iptables -A DOCKER-USER -o "$api_net_interface_name" -p tcp -m conntrack --ctreplsrc "$rds_elastic_net_ip" -j ACCEPT
 
 # AWS S3 stuff. This will result in a lot of rules.
 aws_ip_ranges_path="/tmp/aws-ip-ranges.json"
@@ -93,10 +93,10 @@ rm -f "$aws_ip_ranges_path"  # remove when done, as it's a large file
 
 for ip in "${ip_addresses[@]}"; do
     echo "adding to $ip"
-    sudo iptables -A DOCKER-USER -o "$api_net_interface" -s "$ip" -j LOG --log-prefix "DOCKER DEBUG ACCEPT 1: " --log-level 4
-    sudo iptables -A DOCKER-USER -i "$api_net_interface" -d "$ip" -j LOG --log-prefix "DOCKER DEBUG ACCEPT 2: " --log-level 4
-    sudo iptables -A DOCKER-USER -o "$api_net_interface" -s "$ip" -j ACCEPT
-    sudo iptables -A DOCKER-USER -i "$api_net_interface" -d "$ip" -j ACCEPT
+    sudo iptables -A DOCKER-USER -o "$api_net_interface_name" -s "$ip" -j LOG --log-prefix "DOCKER DEBUG ACCEPT 1: " --log-level 4
+    sudo iptables -A DOCKER-USER -i "$api_net_interface_name" -d "$ip" -j LOG --log-prefix "DOCKER DEBUG ACCEPT 2: " --log-level 4
+    sudo iptables -A DOCKER-USER -o "$api_net_interface_name" -s "$ip" -j ACCEPT
+    sudo iptables -A DOCKER-USER -i "$api_net_interface_name" -d "$ip" -j ACCEPT
 done
 
 # Stripe stuff. This will result in a lot of rules.
@@ -133,17 +133,17 @@ fi
 # should be quite a few (like 100-300-ish, eyballing it). More potential urls or 
 # endpoints can be found at https://docs.stripe.com/ips
 while read -r ip; do
-    iptables -A DOCKER-USER -i "$api_net_interface" -d "$ip" -p tcp -j ACCEPT
-    iptables -A DOCKER-USER -o "$api_net_interface" -s "$ip" -p tcp -j ACCEPT
+    iptables -A DOCKER-USER -i "$api_net_interface_name" -d "$ip" -p tcp -j ACCEPT
+    iptables -A DOCKER-USER -o "$api_net_interface_name" -s "$ip" -p tcp -j ACCEPT
 done < "$stripe_ips_path"
 
 rm -f "$stripe_ips_path"  # remove when done
 
-# ACCEPT traffic out from api_net_interface to each relevant subnet (three of them)
+# ACCEPT traffic out from api_net_interface_name to each relevant subnet (three of them)
 for subnet in $subnets; do
   echo "Applying rule for subnet: $subnet"
-  iptables -A DOCKER-USER -i "$api_net_interface" -d "$subnet" -j LOG --log-prefix "DOCKER DEBUG ACCEPT 3: " --log-level 4
-  iptables -A DOCKER-USER -i "$api_net_interface" -d "$subnet" -j ACCEPT
+  iptables -A DOCKER-USER -i "$api_net_interface_name" -d "$subnet" -j LOG --log-prefix "DOCKER DEBUG ACCEPT 3: " --log-level 4
+  iptables -A DOCKER-USER -i "$api_net_interface_name" -d "$subnet" -j ACCEPT
 done
 # Note: The intention is that these should catch all possible exit ips
 
@@ -174,7 +174,7 @@ fi
 # allow traffic to Google IPs (for gmail email backend)
 for ip in "${ip_addresses[@]}"; do
     echo "g.ip: $ip"
-    sudo iptables -A DOCKER-USER -i "$api_net_interface" -d "$ip" -j ACCEPT
+    sudo iptables -A DOCKER-USER -i "$api_net_interface_name" -d "$ip" -j ACCEPT
 done
 rm -f "$google_ips_path"  # Clean up
 
@@ -184,22 +184,22 @@ rm -f "$google_ips_path"  # Clean up
 # a lot of the more specific rules already applied. In part, I am not fully confident in
 # my understanding and implementation of these iptables rules, so this is a 
 # belt-and-suspenders approach.
-iptables -A DOCKER-USER -i "$api_net_interface" -d "$vpc_cidr_block" -j LOG --log-prefix "DOCKER DEBUG ACCEPT 4: " --log-level 4
-iptables -A DOCKER-USER -i "$api_net_interface" -d "$vpc_cidr_block" -j ACCEPT
+iptables -A DOCKER-USER -i "$api_net_interface_name" -d "$vpc_cidr_block" -j LOG --log-prefix "DOCKER DEBUG ACCEPT 4: " --log-level 4
+iptables -A DOCKER-USER -i "$api_net_interface_name" -d "$vpc_cidr_block" -j ACCEPT
 
 # Before adding DROP rules, add log rules that should not run but will if there is a  
 # problem with the above rules, and especially with the value of $rds_elastic_net_ip.
 # Re: 172.31.0.0/16, see the note above the corresponding rule, below.
-iptables -A DOCKER-USER -o "$api_net_interface" -j LOG --log-prefix "DOCKER DEBUG DROP 2: " --log-level 4
-iptables -A DOCKER-USER -i "$api_net_interface" -j LOG --log-prefix "DOCKER DEBUG DROP 3: " --log-level 4
+iptables -A DOCKER-USER -o "$api_net_interface_name" -j LOG --log-prefix "DOCKER DEBUG DROP 2: " --log-level 4
+iptables -A DOCKER-USER -i "$api_net_interface_name" -j LOG --log-prefix "DOCKER DEBUG DROP 3: " --log-level 4
 
 # Deny all other inbound communications (-o here means out of the docker network and to 
 # the container)
-iptables -A DOCKER-USER -o "$api_net_interface" -j DROP
+iptables -A DOCKER-USER -o "$api_net_interface_name" -j DROP
 
 # Deny all other outbound communications (-i here means into the docker network from the 
 # container, on on out to the internet)
-iptables -A DOCKER-USER -i "$api_net_interface" -j DROP
+iptables -A DOCKER-USER -i "$api_net_interface_name" -j DROP
 
 # Re-add the default docker RETURN
 iptables -A DOCKER-USER -j RETURN
