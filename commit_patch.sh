@@ -61,7 +61,12 @@ read major minor patch <<< "$version_numbers"
 # Increment patch version
 new_patch=$((patch + 1))
 new_version="v$major.$minor.$new_patch"
-commit_message="Automated message for $new_version"
+
+read -p "Commit message (press enter only for the automated default): " commit_message
+if [[ "$commit_message" == "" ]]; then
+  commit_message="Automated message for $new_version"
+fi
+# commit_message="Automated message for $new_version"
 tag_message="Automated message for $new_version"
 
 # Show current git status and confirm
