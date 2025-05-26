@@ -54,32 +54,66 @@
 
 # echo "<<<<<< exiting get_secrets.sh"
 
+# #!/bin/bash
+# echo ">>>>>> entered get_secrets.sh"
+# set -euo pipefail
+# mkdir -p secrets
+
+# bucket="allexem-${staging_or_prod}-secrets"
+
+# # List all secrets under the appropriate prefix and download them
+# aws s3api list-objects-v2 \
+#   --bucket "$bucket" \
+#   --prefix "${staging_or_prod}/" \
+#   --query 'Contents[].Key' \
+#   --output text |
+# while read -r key; do
+#   filename="${key#${staging_or_prod}/}"  # Strip the prefix from the key
+#   if [[ -n "$filename" ]]; then
+#     echo "Downloading $key to ./secrets/$filename"
+#     aws s3api get-object \
+#       --bucket "$bucket" \
+#       --key "$key" \
+#       "./secrets/$filename"
+#   fi
+# done
+
+# # (Optional) Reset ownership and permissions if needed
+# # chown -R ubuntu:ubuntu ./secrets
+# # chmod 600 ./secrets/*
+
+# echo "<<<<<< exiting get_secrets.sh"
+
 #!/bin/bash
-echo ">>>>>> entered get_secrets.sh"
 set -euo pipefail
+
+echo ">>>>>> entered get_secrets.sh"
+
 mkdir -p secrets
 
 bucket="allexem-${staging_or_prod}-secrets"
+prefix="${staging_or_prod}/"
 
-# List all secrets under the appropriate prefix and download them
-aws s3api list-objects-v2 \
-  --bucket "$bucket" \
-  --prefix "${staging_or_prod}/" \
-  --query 'Contents[].Key' \
-  --output text |
-while read -r key; do
-  filename="${key#${staging_or_prod}/}"  # Strip the prefix from the key
-  if [[ -n "$filename" ]]; then
-    echo "Downloading $key to ./secrets/$filename"
-    aws s3api get-object \
-      --bucket "$bucket" \
-      --key "$key" \
-      "./secrets/$filename"
+# Step 1: Get the list of keys from the bucket and prefix, store in an array
+echo "Listing objects in bucket: $bucket with prefix: $prefix"
+keys_json=$(aws s3api list-objects-v2 --bucket "$bucket" --prefix "$prefix" --query 'Contents[].Key' --output json)
+
+# Parse JSON array to bash array of keys (requires jq)
+mapfile -t keys < <(echo "$keys_json" | jq -r '.[]')
+
+echo "Found ${#keys[@]} keys."
+
+# Step 2: Download each object and save under ./secrets/
+for key in "${keys[@]}"; do
+  filename="${key#${prefix}}"  # Remove the prefix from the key to get filename
+
+  if [[ -z "$filename" ]]; then
+    echo "Skipping empty filename for key: $key"
+    continue
   fi
-done
 
-# (Optional) Reset ownership and permissions if needed
-# chown -R ubuntu:ubuntu ./secrets
-# chmod 600 ./secrets/*
+  echo "Downloading $key to ./secrets/$filename"
+  aws s3api get-object --bucket "$bucket" --key "$key" "./secrets/$filename"
+done
 
 echo "<<<<<< exiting get_secrets.sh"
