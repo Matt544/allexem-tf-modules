@@ -96,14 +96,19 @@ resource "aws_iam_role_policy_attachment" "attach_read_scripts_policy" {
 # Policy to allow read access to s3 secrets directory
 resource "aws_iam_policy" "read_secrets_policy" {
   name        = var.s3_secrets_policy_name
-  description = "Allow EC2 to read specific script files from the secrets bucket"
+  description = "Allow EC2 to list and read secret files from the secrets bucket"
   policy      = jsonencode({
     Version = "2012-10-17"
     Statement = [
      {
         Effect = "Allow"
+        Action = "s3:ListBucket"
+        Resource = "arn:aws:s3:::allexem-${var.staging_or_prod}-secrets"
+      },
+     {
+        Effect = "Allow"
         Action = "s3:GetObject"
-        Resource = "arn:aws:s3:::allexem-${var.staging_or_prod}-secrets/${var.staging_or_prod}/*"
+        Resource = "arn:aws:s3:::allexem-${var.staging_or_prod}-secrets/*"
       }
     ]
   })
