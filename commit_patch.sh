@@ -4,6 +4,9 @@
 # chmod +x commit_patch.sh
 # ./commit_patch.sh
 
+# If you don't want to commit a patch (e.g. you want no new version number or you need
+# to change the major or minor numbers), then do so manually.
+
 set -e
 
 # Ensure we're on the 'main' branch before proceeding
@@ -71,7 +74,7 @@ tag_message="Automated message for $new_version"
 
 # Show current git status and confirm
 git status
-read -p "Continue with these changes? [yes/no]: " confirm
+read -p "Continue with these changes and tag with '$new_version'? [yes/no]: " confirm
 if [[ "$confirm" != "yes" ]]; then
   echo "Aborting on user request."
   exit 1
