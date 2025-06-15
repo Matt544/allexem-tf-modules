@@ -62,22 +62,19 @@ if [ -n "$version_numbers" ]; then
   read major minor patch <<< "$version_numbers"
 fi
 
+placeholder_dev_version="epoch-<epochtime>"
+
 echo "Choose a new tag type:"
-echo "1. dev-tag (git-<short_hash>)"
+echo "1. dev-tag ($placeholder_dev_version)"
 echo "2. + patch"
 echo "3. + minor"
 echo "4. + major"
 read -p "☛ " tag_type
 # use dict for major/minor/patch to prevent errors
 
-placeholder_dev_version="git-<short_hash>-TBD"
-
 if [[ "$tag_type" == "1" ]]; then
-  # short_hash=$(git rev-parse --short main)
-  # new_version="git-$short_hash"
   new_version=$placeholder_dev_version  # TBD, after the new commit hash is available.
-  echo "You chose a dev-tag (git-<short_hash>)."
-  # echo "New version tag: $new_version."
+  echo "You chose a dev-tag ($placeholder_dev_version)."
 elif [[ "$tag_type" == "2" ]]; then
   # Increment patch version
   new_patch=$((patch + 1))
@@ -132,11 +129,9 @@ fi
 
 git add -A
 git commit -m "$commit_message"
-git rev-parse --short main
 
 if [[ "$new_version" == $placeholder_dev_version ]]; then
-  short_hash=$(git rev-parse --short main)
-  new_version="git-$short_hash"
+  new_version="epoch-$EPOCHSECONDS"
 fi
 
 git tag -a "$new_version" -m "$tag_message"
@@ -145,9 +140,9 @@ git push origin main --follow-tags
 echo "Changes added, committed, tagged and pushed."
 echo
 
-# Cull old git-* tags, keeping only the most recent 3
-GIT_TAGS=$(git tag --sort=-creatordate | grep '^git-' || true)
-TAGS_TO_DELETE=$(echo "$GIT_TAGS" | tail -n +4)
+# Cull old epoch-* tags, keeping only the most recent 3
+EPOCH_TAGS=$(git tag | grep '^epoch-[0-9]\+' | sort -t'-' -k2 -n -r)
+TAGS_TO_DELETE=$(echo "$EPOCH_TAGS" | tail -n +4)
 
 echo "Delete all but the last three dev tags? Namely:" 
 for tag in $(echo "$TAGS_TO_DELETE" | xargs); do
@@ -160,17 +155,17 @@ if [[ "$confirm_delete" != "yes" ]]; then
   echo "Skipping deletions."
   exit 1
 else
-  if [[ -n "$GIT_TAGS" ]]; then
+  if [[ -n "$EPOCH_TAGS" ]]; then
     if [[ -n "$TAGS_TO_DELETE" ]]; then
-      echo "Deleting old git-* tags..."
+      echo "Deleting old epoch-* tags..."
       # Delete local tags
       echo "$TAGS_TO_DELETE" | xargs -r git tag -d
       # Delete remote tags
       echo "$TAGS_TO_DELETE" | xargs -r -I {} git push origin --delete {}
     else
-      echo "No old git-* tags to delete."
+      echo "No old epoch-* tags to delete."
     fi
   else
-    echo "No git-* tags found."
+    echo "No epoch-* tags found."
   fi
 fi
