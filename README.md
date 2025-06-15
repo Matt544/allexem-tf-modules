@@ -18,7 +18,8 @@ Before using the module, start the SSH agent manually:
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 ```
-The ssh passphrase is the usual default password for the Allexem project.
+The ssh passphrase is the usual default password for the Allexem project. It may also
+be stored in the allexem staging secrets dir.
 
 ## Versioning
 Modules are versioned using Git tags. 

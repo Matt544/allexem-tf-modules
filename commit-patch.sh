@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Usage:
-# chmod +x commit_patch.sh
-# ./commit_patch.sh
+# chmod +x commit-patch.sh
+# ./commit-patch.sh
 
 # If you don't want to commit a patch (e.g. you want no new version number or you need
 # to change the major or minor numbers), then do so manually.
@@ -59,7 +59,9 @@ fi
 
 # Parse version numbers from local_last_tag (e.g., v2.5.12)
 version_numbers=$(echo "$local_last_tag" | sed -E 's/^v([0-9]+)\.([0-9]+)\.([0-9]+)$/\1 \2 \3/')
-read major minor patch <<< "$version_numbers"
+if [ -n "$version_numbers" ]; then
+  read major minor patch <<< "$version_numbers"
+fi
 
 # Increment patch version
 new_patch=$((patch + 1))
@@ -70,7 +72,7 @@ if [[ "$commit_message" == "" ]]; then
   commit_message="Automated message for $new_version"
 fi
 # commit_message="Automated message for $new_version"
-tag_message="Automated message for $new_version"
+tag_message="$commit_message"
 
 # Show current git status and confirm
 git status
