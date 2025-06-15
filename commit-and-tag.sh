@@ -30,7 +30,7 @@ remote_last_tag=$(git ls-remote --tags origin 'v*.*.*' \
 major=0
 minor=0
 patch=0
-
+sleep 2
 if [ -z "$remote_last_tag" ]; then
   echo "No remote release tag found. Starting at v0.0.1"
 elif [ -z "$local_last_tag" ]; then
