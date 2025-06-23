@@ -57,11 +57,6 @@ variable "env_main_path" {
   type        = string
 }
 
-# variable "env_proxy_path" {
-#   description = "Path to env file for proxy-companion"
-#   type        = string
-# }
-
 variable "domain" {
   type = string
 }

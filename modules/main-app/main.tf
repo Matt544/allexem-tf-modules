@@ -153,13 +153,6 @@ locals {
           encoding    = "b64"
           content     = filebase64(var.env_main_path)
         },
-        # {
-        #   path        = "/home/ubuntu/.env.live.${var.staging_or_prod}.proxy-companion"
-        #   permissions = "0644"
-        #   owner       = "root:root"
-        #   encoding    = "b64"
-        #   content     = filebase64(var.env_proxy_path)
-        # }
       ]
     })}
   EOF
